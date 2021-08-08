@@ -1,6 +1,12 @@
-variable "password" {}
-variable "username" {}
-variable "nsxhost" {}
+variable "password" {
+  type = string
+}
+variable "username" {
+  type = string
+}
+variable "nsxhost" {
+  type = string
+}
 
 terraform {
   required_providers {
