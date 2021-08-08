@@ -2,9 +2,6 @@ name: "Plan Prod"
 
 on:
   pull_request:
-  push:
-    branches:
-      - main
 
 jobs:
   terraform:
@@ -68,5 +65,5 @@ jobs:
         run: exit 1
 
       - name: Terraform Apply
-        if: github.event.pull_request.merged == true && github.ref == 'refs/heads/main' && github.event_name == 'push'
+        if: github.event.pull_request.merged == true && github.ref == 'refs/heads/main'
         run: terraform apply -auto-approve
