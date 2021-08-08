@@ -72,9 +72,11 @@ jobs:
         run: terraform apply -auto-approve
 
       - name: CreatePR if apply succeed 
+        id: createpr
         uses: actions/github-script@v4.0.2
         if: steps.apply.outcome == 'success'
         with:
+          debug: true
           github-token: ${{ secrets.REPO_TOKEN_SECRET }}
           script: |
             github.pulls.create({
@@ -91,7 +93,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const output = `Test for this commit has failed`
+            const output = `Test for this commit has failed `${{ steps.createpr.outcomei }}``
             github.repos.createCommitComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
