@@ -29,6 +29,7 @@ terraform {
   }
 }
 
+
 provider "nsxt" {
   host = var.nsxhost
   username = var.username 
