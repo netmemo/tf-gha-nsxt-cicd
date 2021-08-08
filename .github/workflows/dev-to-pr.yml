@@ -93,7 +93,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const output = `Test for this commit has failed `${{ steps.createpr.outcomei }}``
+            const output = `Test for this commit has failed `${{ steps.createpr.outcomei }}``;
             github.repos.createCommitComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
