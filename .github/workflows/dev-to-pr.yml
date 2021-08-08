@@ -1,0 +1,112 @@
+name: "Actions on dev en create PR"
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  terraform:
+    name: "Plan, Apply dev and Create PR"
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+      - name: Terraform Format
+        id: fmt
+        run: terraform fmt -check
+
+      - name: Terraform Init
+        id: init
+        run: terraform init
+        env:
+          TF_WORKSPACE: "dev"
+
+      - name: Terraform Workspace
+        id: workspace
+        run: terraform workspace select dev
+      
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+
+      - name: Setup Terraform variables
+        id: vars
+        run: |-
+          cat > pipeline.auto.tfvars <<EOF
+          nsxhost = "netmemo.ddns.net:8882"
+          EOF
+
+      - name: Terraform Plan
+        id: plan
+        if: github.event_name == 'push'
+        run: terraform plan -no-color
+        continue-on-error: true
+
+      - uses: actions/github-script@0.9.0
+        if: github.event_name == 'push'
+        env:
+          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+            #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+            <details><summary>Show Plan</summary>
+            \`\`\`\n
+            ${process.env.PLAN}
+            \`\`\`
+            </details>
+            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+            github.repos.createCommitComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              commit_sha: context.sha,
+              body: output
+            })
+
+      - name: Terraform Plan Status
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
+
+      - name: Terraform Apply
+        id: apply
+        if: steps.plan.outcome == 'success'
+        run: terraform apply -auto-approve
+
+      - name: CreatePR if apply succeed 
+        uses: actions/github-script@v4.0.2
+        if: steps.apply.outcome == 'success'
+        with:
+          github-token: ${{ secrets.REPO_TOKEN_SECRET }}
+          script: |
+            github.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: "Auto PR",
+              head: "dev",
+              base: "main"
+            });
+
+      - name: Revert commit if any step failed
+        uses: actions/github-script@v4.0.2
+        if: ${{ failure() || cancelled() }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = `Test for this commit has failed`
+            github.repos.createCommitComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              commit_sha: context.sha,
+              body: output
+            })
