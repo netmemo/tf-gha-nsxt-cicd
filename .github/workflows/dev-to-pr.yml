@@ -37,13 +37,6 @@ jobs:
         id: validate
         run: terraform validate -no-color
 
-      - name: Setup Terraform variables
-        id: vars
-        run: |-
-          cat > pipeline.auto.tfvars <<EOF
-          nsxhost = "netmemo.ddns.net:8882"
-          EOF
-
       - name: Terraform Plan
         id: plan
         if: github.event_name == 'push'

@@ -23,9 +23,8 @@ terraform {
   }
 }
 
-#First variable is from auto.tfvars, username and password from terraform cloud variables
 provider "nsxt" {
-    host = "${var.nsxhost}"
+    host = var.nsxhost
     username = var.username 
     password = var.password
     allow_unverified_ssl = true
