@@ -34,5 +34,5 @@ jobs:
         run: terraform validate -no-color
 
       - name: Terraform Apply
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        id: apply
         run: terraform apply -auto-approve
