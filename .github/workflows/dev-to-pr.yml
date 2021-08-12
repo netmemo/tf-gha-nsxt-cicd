@@ -40,7 +40,6 @@ jobs:
         continue-on-error: true
 
       - uses: actions/github-script@v4.0.2
-        if: github.event_name == 'push'
         env:
           PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
         with:
@@ -77,7 +76,7 @@ jobs:
         if: steps.apply.outcome == 'success'
         with:
           debug: true
-          github-token: ${{ secrets.REPO_TOKEN_SECRET }}
+          github-token: ${{ secrets.PERSO_GITHUB_TOKEN }}
           script: |
             github.pulls.create({
               owner: context.repo.owner,
