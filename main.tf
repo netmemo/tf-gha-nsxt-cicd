@@ -36,8 +36,8 @@ provider "nsxt" {
   allow_unverified_ssl = true
 }
 
-#resource "nsxt_policy_tier1_gateway" "tier1_gw" {
-#  description = "Tier-1 provisioned by Terraform"
-#  display_name = "T1-TFC"
-#  route_advertisement_types = ["TIER1_CONNECTED"]
-#}
+resource "nsxt_policy_tier1_gateway" "tier1_gw" {
+  description = "Tier-1 provisioned by Terraform"
+  display_name = "T1-TFC"
+  route_advertisement_types = ["TIER1_CONNECTED"]
+}

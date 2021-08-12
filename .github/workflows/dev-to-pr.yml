@@ -81,7 +81,7 @@ jobs:
             github.pulls.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: "Auto PR",
+              title: "Auto PR generate by Github Action dev pipeline",
               head: "dev",
               base: "main"
             });
