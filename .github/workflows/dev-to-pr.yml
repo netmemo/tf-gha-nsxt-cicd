@@ -1,4 +1,4 @@
-name: "Actions on dev en create PR"
+name: "Dev pipeline"
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   terraform:
-    name: "Plan, Apply dev and Create PR"
+    name: "Job plan, apply on dev then Create PR"
     runs-on: ubuntu-latest
     steps:
 

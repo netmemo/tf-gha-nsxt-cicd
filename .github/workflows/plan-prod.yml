@@ -1,11 +1,11 @@
-name: "Plan prod"
+name: "Integration pipeline - TF plan"
 
 on:
   pull_request:
 
 jobs:
   terraform:
-    name: "Plan prod"
+    name: "Job TF plan on PR for prod"
     runs-on: ubuntu-latest
     steps:
 
