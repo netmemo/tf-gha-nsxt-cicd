@@ -1,4 +1,4 @@
-name: "Prod env"
+name: "Deployment pipeline - TF apply"
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   terraform:
-    name: "Apply"
+    name: "Job TF apply on merged for prod"
     runs-on: ubuntu-latest
     steps:
 
