@@ -21,7 +21,7 @@ terraform {
   }
 
   backend "remote" {
-    organization = "netmemo"
+    organization = "firsttest-poc"
 
     workspaces {
       prefix = "netmemo-"
